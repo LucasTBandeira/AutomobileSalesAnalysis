@@ -55,6 +55,16 @@ app.layout = html.Div([
 ])
 
 # Creating Callbacks
+@app.callback(
+    Output(component_id='select-year', component_property='disabled'),
+    Input(component_id='dropdown-statistics', component_property='disabled')
+    )
+
+def update_input_container(selected_statistics):
+    if selected_statistics == 'Yearly Statistics':
+        return False
+    else: 
+        return True
 
 # Run the app
 if __name__ == '__main__':
