@@ -8,6 +8,7 @@ import plotly.express as px
 
 # Variables
 year_list = [i for i in range(1980, 2024, 1)]
+
 dropdown_options = [
     {'label': '...........', 'value': 'Yearly Statistics'},
     {'label': 'Recession Period Statistics', 'value': '.........'}
@@ -85,10 +86,23 @@ def compute_yearly_info(yearly_data):
  
 def recession_report():
     df = compute_recession_info(data[data['Recession'] == 1])
-    return
+    yearly_rec, avg_sales_type, total_exp, unemployed_sales = df
+    chart1 = dcc.Graph(figure=px.line(yearly_rec, x='Year',y='Automobile_Sales', title="Automobile Sales Over Time"))
+    chart2 = dcc.Graph(figure=px.bar(avg_sales_type, x='Vehicle_Type', y='Automobile_Sales', title="Automobile Sales by Vehicle Type"))
+    chart3 = dcc.Graph(figure=px.pie(total_exp, names='Vehicle_Type', values='Advertising_Expenditure', title="Advertising Expenditure by Vehicle Type"))
+    chart4 = dcc.Graph(figure=px.bar(unemployed_sales, x='unemployment_rate', y='Automobile_Sales', title="Unemployment Rate Effect on Automobile Sales by Vehicle Type"))
+    
+    return [
+            html.Div(className='chart-item', children=[html.Div(children=chart1), html.Div(children=chart2)]),
+            html.Div(className='chart-item', children=[html.Div(children=chart3), html.Div(children=chart4)]),
+            ]
        
 def compute_recession_info(recession_data):
-    return
+    yearly_rec = recession_data.groupby('Year')['Automobile_Sales'].mean().reset_index()
+    avg_sales_type = recession_data.groupby('Vehicle_Type')['Automobile_Sales'].mean().reset_index()
+    total_exp = recession_data.groupby('Vehicle_Type')['Advertising_Expenditure'].sum().reset_index()
+    unemployed_sales = recession_data.groupby(['unemployment_rate','Vehicle_Type'])['Automobile_Sales'].sum().reset_index()
+    return yearly_rec, avg_sales_type, total_exp, unemployed_sales
     
 # Run the app
 if __name__ == '__main__':
