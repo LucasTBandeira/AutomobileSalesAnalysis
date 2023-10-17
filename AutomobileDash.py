@@ -66,6 +66,30 @@ def update_input_container(selected_statistics):
     else: 
         return True
 
+@app.callback(
+    Output(component_id='output-container', component_property='children'),
+    [Input(component_id='select-year', component_property='value'), Input(component_id='dropdown-statistics', component_property='value')])
+
+def update_output_container(selected_year, selected_statistics):
+    if selected_statistics == 'Yearly Statistics':
+        return yearly_report(selected_year)
+    else:
+        return recession_report()
+
+def yearly_report(selected_year):
+    df = compute_yearly_info(data[data['Year'] == selected_year])
+    return
+
+def compute_yearly_info(yearly_data):
+     return
+ 
+def recession_report():
+    df = compute_recession_info(data[data['Recession'] == 1])
+    return
+       
+def compute_recession_info(recession_data):
+    return
+    
 # Run the app
 if __name__ == '__main__':
     app.run_server()
